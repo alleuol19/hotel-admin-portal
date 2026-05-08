@@ -109,6 +109,7 @@ public class AuthController {
 	    List<Map<String, Object>> successfulBookings = new ArrayList<>();
 	    List<Map<String, Object>> cancelledBookings = new ArrayList<>();
 	    List<Map<String, Object>> users = new ArrayList<>();
+	    List<Map<String, Object>> feedbackList = new ArrayList<>();
 
 	    try {
 
@@ -191,6 +192,40 @@ public class AuthController {
 
 	        userRs.close();
 	        userStmt.close();
+	        String feedbackSql =
+	                "SELECT * FROM feedback ORDER BY id DESC";
+
+	        PreparedStatement feedbackStmt =
+	                conn.prepareStatement(feedbackSql);
+
+	        ResultSet feedbackRs =
+	                feedbackStmt.executeQuery();
+
+	        while(feedbackRs.next()) {
+
+	            Map<String, Object> feedback =
+	                    new HashMap<>();
+
+	            feedback.put("id",
+	                    feedbackRs.getInt("id"));
+
+	            feedback.put("userName",
+	                    feedbackRs.getString("user_name"));
+
+	            feedback.put("rating",
+	                    feedbackRs.getInt("rating"));
+
+	            feedback.put("message",
+	                    feedbackRs.getString("message"));
+
+	            feedback.put("createdAt",
+	                    feedbackRs.getString("created_at"));
+
+	            feedbackList.add(feedback);
+	        }
+
+	        feedbackRs.close();
+	        feedbackStmt.close();
 	        conn.close();
 
 	    } catch(Exception e) {
@@ -203,6 +238,7 @@ public class AuthController {
 	    model.addAttribute("successfulBookings", successfulBookings);
 	    model.addAttribute("cancelledBookings", cancelledBookings);
 	    model.addAttribute("users", users);
+	    model.addAttribute("feedbackList", feedbackList);
 	    return "admin-dashboard";
 	}
 	@GetMapping("/admin-login")
