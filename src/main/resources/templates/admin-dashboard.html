@@ -529,8 +529,8 @@ tr:last-child td{
             <h4>EST. REVENUE</h4>
 
             <h2 class="blue">
-            ₱0.0k
-            </h2>
+₱<span th:text="${totalRevenue}"></span>
+</h2>
 
             <p>Confirmed only</p>
         </div>
@@ -632,24 +632,30 @@ tr:last-child td{
 
                             <form th:action="@{/confirm-booking}" method="post">
 
-                                <input type="hidden"
-                                name="bookingId"
-                                th:value="${booking.id}">
+    <input type="hidden"
+           name="bookingId"
+           th:value="${booking.id}">
 
-                                <select class="payment-select"
-                                name="paymentMethod">
+    <select class="payment-select" name="paymentMethod">
+        <option>Cash</option>
+        <option>Card</option>
+        <option>GCash</option>
+    </select>
 
-                                    <option>Cash</option>
-                                    <option>Card</option>
-                                    <option>GCash</option>
+    <select class="payment-select" name="roomNumber" required>
+        <option value="">Room</option>
 
-                                </select>
+        <option th:each="room : ${booking.availableRooms}"
+                th:value="${room}"
+                th:text="${room}">
+        </option>
+    </select>
 
-                                <button class="btn btn-confirm">
-                                    Confirm
-                                </button>
+    <button class="btn btn-confirm">
+        Confirm
+    </button>
 
-                            </form>
+</form>
 
                             <form th:action="@{/cancel-booking}" method="post">
 

@@ -140,6 +140,15 @@ public class AuthController {
 	            String status = rs.getString("status");
 
 	            if(status.equals("PENDING")) {
+
+	                List<String> availableRooms =
+	                        getAvailableRooms(
+	                                conn,
+	                                rs.getString("room_type")
+	                        );
+
+	                booking.put("availableRooms", availableRooms);
+
 	                pendingBookings.add(booking);
 	            }
 	            else if(status.equals("SUCCESSFUL")) {
@@ -149,6 +158,16 @@ public class AuthController {
 	                cancelledBookings.add(booking);
 	            }
 	        }
+	        double totalRevenue = 0;
+
+	        for(Map<String,Object> booking : successfulBookings){
+
+	            totalRevenue += Double.parseDouble(
+	                booking.get("price").toString()
+	            );
+	        }
+
+	        model.addAttribute("totalRevenue", totalRevenue);
 
 	        rs.close();
 	        stmt.close();
@@ -217,7 +236,8 @@ public class AuthController {
 	@PostMapping("/confirm-booking")
 	public String confirmBooking(
 	        @RequestParam int bookingId,
-	        @RequestParam String paymentMethod
+	        @RequestParam String paymentMethod,
+	        @RequestParam String roomNumber
 	) {
 
 	    try {
@@ -240,10 +260,7 @@ public class AuthController {
 	            roomType = rs.getString("room_type");
 	        }
 
-	        List<String> availableRooms =
-	                getAvailableRooms(conn, roomType);
-
-	        String assignedRoom = availableRooms.get(0);
+	        String assignedRoom = roomNumber;
 
 	        String sql =
 	                "UPDATE booking " +
