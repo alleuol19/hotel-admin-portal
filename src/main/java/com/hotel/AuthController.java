@@ -146,7 +146,11 @@ public class AuthController {
 	            booking.put("status", rs.getString("status"));
 	            booking.put("paymentMethod", rs.getString("payment_method"));
 	            booking.put("roomNumber", rs.getString("room_number"));
-
+	            
+	            booking.put(
+	            	    "createdAt",
+	            	    rs.getString("created_at")
+	            	);
 	            String status = rs.getString("status");
 
 	            if(status.equals("PENDING")) {
