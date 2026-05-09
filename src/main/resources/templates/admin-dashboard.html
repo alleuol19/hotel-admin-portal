@@ -536,7 +536,9 @@ tr:last-child td{
             0
             </h2>
 
-            <p>Active</p>
+            <p style="color:var(--green);">
+    		Active bookings
+			</p>
         </div>
 
         <div class="stat-card">
@@ -547,7 +549,9 @@ tr:last-child td{
             0
             </h2>
 
-            <p>Total</p>
+            <p style="color:var(--red);">
+   			Cancelled bookings
+			</p>
         </div>
 
         <div class="stat-card">
@@ -639,7 +643,9 @@ tr:last-child td{
 			<th>GUESTS</th>
 			<th>CHECK-IN</th>
 			<th>CHECK-OUT</th>
+			<th>BOOKED AT</th>
 			<th>TOTAL</th>
+			<th>PAYMENT</th>
 			<th>STATUS</th>
 			<th>ACTIONS</th>
 
@@ -661,11 +667,13 @@ tr:last-child td{
                     <td th:text="${booking.checkInDate}"></td>
 
                     <td th:text="${booking.checkOutDate}"></td>
-
+                    <td th:text="${booking.createdAt}"></td>
                     <td>
                         ₱<span th:text="${booking.price}"></span>
                     </td>
-
+                    <td>
+    				<span th:text="${booking.paymentMethod != null ? booking.paymentMethod : 'Not selected'}"></span>
+					</td>
                     <td>
                         <span class="status pending">
                             Pending
@@ -724,43 +732,31 @@ tr:last-child td{
                 <tr th:each="booking : ${successfulBookings}">
 
     <td th:text="${booking.id}"></td>
-
     <td th:text="${booking.fullName}"></td>
-
     <td th:text="${booking.roomType}"></td>
-
     <td th:text="${booking.roomNumber}"></td>
-
     <td th:text="${booking.guests}"></td>
-
     <td th:text="${booking.checkInDate}"></td>
-
     <td th:text="${booking.checkOutDate}"></td>
+    <td th:text="${booking.createdAt}"></td>
 
     <td>
         ₱<span th:text="${booking.price}"></span>
     </td>
 
     <td>
-        <span class="status success">
-            Confirmed
-        </span>
+        <span th:text="${booking.paymentMethod != null ? booking.paymentMethod : 'Not selected'}"></span>
     </td>
 
     <td>
+        <span class="status success">Confirmed</span>
+    </td>
 
+    <td>
         <form th:action="@{/checkout-booking}" method="post">
-
-            <input type="hidden"
-                   name="bookingId"
-                   th:value="${booking.id}">
-
-            <button class="btn btn-checkout">
-                Check Out
-            </button>
-
+            <input type="hidden" name="bookingId" th:value="${booking.id}">
+            <button class="btn btn-checkout">Check Out</button>
         </form>
-
     </td>
 
 </tr>
@@ -823,7 +819,30 @@ tr:last-child td{
             </div>
 
         </div>
+        <div class="room-card">
 
+    <img src="/images/family-room.jpg">
+
+    <div class="room-content">
+
+        <h3>Family Room</h3>
+
+        <p>₱7,500/night · Up to 6 guests</p>
+        <p style="color:#4effaa;font-size:0.8rem;">
+  	    Available Rooms: 5
+		</p>
+        <span class="tag">Free Wi-Fi</span>
+        <span class="tag">Air Conditioning</span>
+        <span class="tag">Smart TV</span>
+        <span class="tag">Mini Refrigerator</span>
+        <span class="tag">Dining Area</span>
+        <span class="tag">Daily Housekeeping</span>
+        <span class="tag">Fresh Towels</span>
+        <span class="tag">Complimentary Water</span>
+
+    </div>
+
+</div>
         <div class="room-card">
 
             <img src="/images/vip-suite.png">
@@ -870,6 +889,20 @@ tr:last-child td{
             </thead>
 
             <tbody>
+            <tr th:if="${#lists.isEmpty(feedbackList)}">
+
+    <td colspan="5"
+        style="
+            text-align:center;
+            color:var(--muted);
+            padding:35px;
+        ">
+
+        No feedback submitted yet.
+
+    </td>
+
+</tr>
                 <tr th:each="fb : ${feedbackList}">
                     <td th:text="${fb.id}"></td>
                     <td th:text="${fb.userName}"></td>
@@ -922,9 +955,19 @@ tr:last-child td{
 </div>
 
 </div>
+<footer style="
+    text-align:center;
+    padding:20px;
+    color:var(--muted);
+    border-top:1px solid var(--line);
+    margin-top:40px;
+">
+
+    © 2026 Hotel De Soleil Admin Panel
+
+</footer>
 
 </div>
-
 <script>
 
 function showPage(id, element){
@@ -962,6 +1005,5 @@ function searchReservations(){
     });
 }
 </script>
-
 </body>
 </html>
