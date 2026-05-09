@@ -193,7 +193,7 @@ body{
 
 .stats{
     display:grid;
-    grid-template-columns:repeat(4,1fr);
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
     gap:18px;
 
     margin-bottom:35px;
@@ -299,6 +299,20 @@ tr:last-child td{
     background:rgba(255,0,0,0.12);
     color:#ff6363;
 }
+.search-box{
+    margin-bottom:20px;
+}
+
+.search-box input{
+    width:min(320px,100%);
+    padding:12px 16px;
+
+    background:#1b1b2a;
+    border:1px solid rgba(255,255,255,0.08);
+
+    border-radius:10px;
+    color:white;
+}
 
 /* BUTTONS */
 
@@ -339,7 +353,7 @@ tr:last-child td{
     color:white;
 
     border:1px solid rgba(255,255,255,0.08);
-
+	cursor:pointer;
     padding:8px 10px;
     border-radius:8px;
 }
@@ -393,7 +407,18 @@ tr:last-child td{
     margin:3px;
 }
 
-/* RESPONSIVE */
+.stat-card,
+.room-card,
+.table-box{
+    transition:0.25s;
+}
+
+.stat-card:hover,
+.room-card:hover,
+.table-box:hover{
+    transform:translateY(-4px);
+    box-shadow:0 14px 30px rgba(0,0,0,0.25);
+}
 
 @media(max-width:1100px){
 
@@ -534,8 +559,19 @@ tr:last-child td{
 
             <p>Confirmed only</p>
         </div>
+<div class="stat-card">
+
+    <h4>AVAILABLE ROOMS</h4>
+
+    <h2 class="green">
+        <span th:text="${availableRooms}"></span>
+    </h2>
+
+    <p>Ready for booking</p>
 
     </div>
+    </div>
+
 
     <div class="table-box">
 
@@ -547,12 +583,12 @@ tr:last-child td{
 
             <thead>
                 <tr>
-                    <th>GUEST</th>
-                    <th>ROOM</th>
-                    <th>CHECK-IN</th>
-                    <th>CHECK-OUT</th>
-                    <th>STATUS</th>
-                </tr>
+                <th>GUEST</th>
+				<th>ROOM</th>
+				<th>CHECK-IN</th>
+				<th>CHECK-OUT</th>
+				<th>STATUS</th>                  
+				</tr>
             </thead>
 
             <tbody>
@@ -584,21 +620,29 @@ tr:last-child td{
 
     <h1 class="page-title">Reservations</h1>
     <p class="page-sub">Manage all guest bookings</p>
-
+    <div class="search-box">
+    <input type="text"
+           id="reservationSearch"
+           placeholder="Search guest, room, or status..."
+           onkeyup="searchReservations()">
+</div>
     <div class="table-box">
 
         <table>
 
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>GUEST</th>
-                    <th>ROOM</th>
-                    <th>CHECK-IN</th>
-                    <th>CHECK-OUT</th>
-                    <th>TOTAL</th>
-                    <th>STATUS</th>
-                    <th>ACTIONS</th>
+            <th>#</th>
+			<th>GUEST</th>
+			<th>ROOM</th>
+			<th>ROOM NO.</th>
+			<th>GUESTS</th>
+			<th>CHECK-IN</th>
+			<th>CHECK-OUT</th>
+			<th>TOTAL</th>
+			<th>STATUS</th>
+			<th>ACTIONS</th>
+
                 </tr>
             </thead>
 
@@ -611,7 +655,9 @@ tr:last-child td{
                     <td th:text="${booking.fullName}"></td>
 
                     <td th:text="${booking.roomType}"></td>
+                    <td>Not assigned</td>
 
+					<td th:text="${booking.guests}"></td>
                     <td th:text="${booking.checkInDate}"></td>
 
                     <td th:text="${booking.checkOutDate}"></td>
@@ -677,43 +723,47 @@ tr:last-child td{
 
                 <tr th:each="booking : ${successfulBookings}">
 
-                    <td th:text="${booking.id}"></td>
+    <td th:text="${booking.id}"></td>
 
-                    <td th:text="${booking.fullName}"></td>
+    <td th:text="${booking.fullName}"></td>
 
-                    <td th:text="${booking.roomType}"></td>
+    <td th:text="${booking.roomType}"></td>
 
-                    <td th:text="${booking.checkInDate}"></td>
+    <td th:text="${booking.roomNumber}"></td>
 
-                    <td th:text="${booking.checkOutDate}"></td>
+    <td th:text="${booking.guests}"></td>
 
-                    <td>
-                        ₱<span th:text="${booking.price}"></span>
-                    </td>
+    <td th:text="${booking.checkInDate}"></td>
 
-                    <td>
-                        <span class="status success">
-                            Confirmed
-                        </span>
-                    </td>
+    <td th:text="${booking.checkOutDate}"></td>
 
-                    <td>
+    <td>
+        ₱<span th:text="${booking.price}"></span>
+    </td>
 
-                        <form th:action="@{/checkout-booking}" method="post">
+    <td>
+        <span class="status success">
+            Confirmed
+        </span>
+    </td>
 
-                            <input type="hidden"
-                            name="bookingId"
-                            th:value="${booking.id}">
+    <td>
 
-                            <button class="btn btn-checkout">
-                                Check Out
-                            </button>
+        <form th:action="@{/checkout-booking}" method="post">
 
-                        </form>
+            <input type="hidden"
+                   name="bookingId"
+                   th:value="${booking.id}">
 
-                    </td>
+            <button class="btn btn-checkout">
+                Check Out
+            </button>
 
-                </tr>
+        </form>
+
+    </td>
+
+</tr>
 
             </tbody>
 
@@ -740,12 +790,14 @@ tr:last-child td{
 
                 <h3>Economy Room</h3>
 
-                <p>₱1,000/night · Up to 2 guests</p>
+                <p>₱3,500/night · Up to 2 guests</p>
 
                 <span class="tag">Free Wi-Fi</span>
                 <span class="tag">Air Conditioning</span>
                 <span class="tag">TV</span>
-
+                <span class="tag">Hot Shower</span>
+                <span class="tag">Fresh Towels</span>
+                <span class="tag">Complimentary Water</span>
             </div>
 
         </div>
@@ -758,11 +810,16 @@ tr:last-child td{
 
                 <h3>Normal Room</h3>
 
-                <p>₱2,500/night · Up to 4 guests</p>
-
+                <p>₱5,500/night · Up to 4 guests</p>
+                
+                <span class="tag">Free Wi-Fi</span>
+                <span class="tag">Air Conditioning</span>
                 <span class="tag">Smart TV</span>
                 <span class="tag">Mini Bar</span>
-
+                <span class="tag">Coffee Station</span>
+                <span class="tag">Daily Housekeeping</span>
+                <span class="tag">Room Service</span>
+                <span class="tag">Fresh Towels</span>
             </div>
 
         </div>
@@ -775,11 +832,18 @@ tr:last-child td{
 
                 <h3>VIP Suite</h3>
 
-                <p>₱5,000/night · Up to 4 guests</p>
+                <p>₱10,000/night · Up to 8 guests</p>
 
+                <span class="tag">Free Wi-Fi</span>
+                <span class="tag">Premium Smart TV</span>
+                <span class="tag">Private Bar</span>
                 <span class="tag">Jacuzzi</span>
-                <span class="tag">Panoramic View</span>
-
+                <span class="tag">Luxury Bathroom</span>
+                <span class="tag">Living Area</span>
+                <span class="tag">Coffee Machine</span>
+                <span class="tag">24/7 Butler Service</span>
+                <span class="tag">Private Balcony</span>
+                <span class="tag">Premium Toiletries</span>
             </div>
 
         </div>
@@ -792,7 +856,6 @@ tr:last-child td{
 
     <h1 class="page-title">Guest Feedback</h1>
     <p class="page-sub">Feedback submitted by registered users</p>
-
     <div class="table-box">
 
         <table>
@@ -878,7 +941,26 @@ function showPage(id, element){
 
     element.classList.add('active');
 }
+function searchReservations(){
 
+    let input =
+    document.getElementById("reservationSearch")
+    .value.toLowerCase();
+
+    let rows =
+    document.querySelectorAll("#reservations tbody tr");
+
+    rows.forEach(row=>{
+
+        let text =
+        row.innerText.toLowerCase();
+
+        row.style.display =
+        text.includes(input)
+        ? ""
+        : "none";
+    });
+}
 </script>
 
 </body>

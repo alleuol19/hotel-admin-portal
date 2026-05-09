@@ -239,6 +239,7 @@ public class AuthController {
 	    model.addAttribute("cancelledBookings", cancelledBookings);
 	    model.addAttribute("users", users);
 	    model.addAttribute("feedbackList", feedbackList);
+	    model.addAttribute("availableRooms", 30);
 	    return "admin-dashboard";
 	}
 	@GetMapping("/admin-login")
