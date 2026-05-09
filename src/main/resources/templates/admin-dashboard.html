@@ -631,29 +631,22 @@ tr:last-child td{
            onkeyup="searchReservations()">
 </div>
     <div class="table-box">
-
         <table>
-
             <thead>
-                <tr>
-            <th>#</th>
-			<th>GUEST</th>
-			<th>ROOM</th>
-			<th>ROOM NO.</th>
-			<th>GUESTS</th>
-			<th>CHECK-IN</th>
-			<th>CHECK-OUT</th>
-			<th>BOOKED AT</th>
-			<th>TOTAL</th>
-			<th>PAYMENT</th>
-			<th>STATUS</th>
-			<th>ACTIONS</th>
-
-                </tr>
-            </thead>
-
+			<tr>
+    	<th>#</th>
+    	<th>GUEST</th>
+   	 	<th>ROOM</th>
+   	 	<th>ROOM NO.</th>
+    	<th>GUESTS</th>
+    	<th>CHECK-IN</th>
+    	<th>CHECK-OUT</th>
+    	<th>TOTAL</th>
+    	<th>STATUS</th>
+    	<th>ACTIONS</th>
+		</tr>
+		</thead>
             <tbody>
-
                 <tr th:each="booking : ${pendingBookings}">
 
                     <td th:text="${booking.id}"></td>
@@ -667,13 +660,9 @@ tr:last-child td{
                     <td th:text="${booking.checkInDate}"></td>
 
                     <td th:text="${booking.checkOutDate}"></td>
-                    <td th:text="${booking.createdAt}"></td>
                     <td>
                         ₱<span th:text="${booking.price}"></span>
                     </td>
-                    <td>
-    				<span th:text="${booking.paymentMethod != null ? booking.paymentMethod : 'Not selected'}"></span>
-					</td>
                     <td>
                         <span class="status pending">
                             Pending
@@ -730,7 +719,6 @@ tr:last-child td{
                 </tr>
 
                 <tr th:each="booking : ${successfulBookings}">
-
     <td th:text="${booking.id}"></td>
     <td th:text="${booking.fullName}"></td>
     <td th:text="${booking.roomType}"></td>
@@ -738,16 +726,11 @@ tr:last-child td{
     <td th:text="${booking.guests}"></td>
     <td th:text="${booking.checkInDate}"></td>
     <td th:text="${booking.checkOutDate}"></td>
-    <td th:text="${booking.createdAt}"></td>
+
 
     <td>
         ₱<span th:text="${booking.price}"></span>
     </td>
-
-    <td>
-        <span th:text="${booking.paymentMethod != null ? booking.paymentMethod : 'Not selected'}"></span>
-    </td>
-
     <td>
         <span class="status success">Confirmed</span>
     </td>
