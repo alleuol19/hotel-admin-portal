@@ -597,16 +597,16 @@ tr:last-child td{
 
             <tbody>
 
-                <tr th:each="booking : ${pendingBookings}">
+                <tr th:each="booking : ${successfulBookings}">
                     <td th:text="${booking.fullName}"></td>
                     <td th:text="${booking.roomType}"></td>
                     <td th:text="${booking.checkInDate}"></td>
                     <td th:text="${booking.checkOutDate}"></td>
 
                     <td>
-                        <span class="status pending">
-                            Pending
-                        </span>
+                        <span class="status success">
+  					  Confirmed
+						</span>
                     </td>
                 </tr>
 
