@@ -31,69 +31,78 @@ public class AuthController {
 	public String home() {
 	    return "redirect:/admin-login";
 	}
-
 	
-	private List<String> getAvailableRooms(Connection conn, String roomType) {
+	
+	private List<String> getAvailableRooms(
+	        Connection conn,
+	        String roomType
+	){
 
-	    List<String> rooms = new ArrayList<>();
+	    List<String> rooms =
+	            new ArrayList<>();
 
-	    int start = 101;
-	    int end = 110;
+	    try{
 
-	    if (roomType.equals("Economy Room")) {
+	        String sql =
+	                "SELECT room_number " +
+	                "FROM rooms " +
+	                "WHERE room_type=? " +
+	                "AND is_available=TRUE";
 
-	        start = 101;
-	        end = 110;
+	        PreparedStatement stmt =
+	                conn.prepareStatement(sql);
 
-	    }
-	    else if (roomType.equals("Normal Room")) {
+	        stmt.setString(1, roomType);
 
-	        start = 201;
-	        end = 210;
+	        ResultSet rs =
+	                stmt.executeQuery();
 
-	    }
-	    else if (roomType.equals("VIP Suite")) {
+	        while(rs.next()){
 
-	        start = 301;
-	        end = 310;
-
-	    }
-
-	    try {
-
-	        for (int i = start; i <= end; i++) {
-
-	            String roomNumber = "R" + i;
-
-	            String sql =
-	                    "SELECT COUNT(*) FROM booking " +
-	                    "WHERE room_number = ? " +
-	                    "AND status = 'SUCCESSFUL'";
-
-	            PreparedStatement stmt =
-	                    conn.prepareStatement(sql);
-
-	            stmt.setString(1, roomNumber);
-
-	            ResultSet rs = stmt.executeQuery();
-
-	            if (rs.next() && rs.getInt(1) == 0) {
-
-	                rooms.add(roomNumber);
-
-	            }
-
-	            rs.close();
-	            stmt.close();
+	            rooms.add(
+	                rs.getString("room_number")
+	            );
 	        }
 
-	    } catch (Exception e) {
+	        rs.close();
+	        stmt.close();
+
+	    }catch(Exception e){
 
 	        e.printStackTrace();
-
 	    }
 
 	    return rooms;
+	}
+	private int getAvailableCount(
+	        Connection conn,
+	        String roomType
+	)throws Exception{
+
+	    String sql =
+	            "SELECT COUNT(*) " +
+	            "FROM rooms " +
+	            "WHERE room_type=? " +
+	            "AND is_available=TRUE";
+
+	    PreparedStatement stmt =
+	            conn.prepareStatement(sql);
+
+	    stmt.setString(1, roomType);
+
+	    ResultSet rs =
+	            stmt.executeQuery();
+
+	    int count = 0;
+
+	    if(rs.next()){
+	        count = rs.getInt(1);
+	    }
+
+	    rs.close();
+	    stmt.close();
+
+	    return count;
 	}
 	@GetMapping("/admin-dashboard")
 	public String adminDashboard(
@@ -226,6 +235,51 @@ public class AuthController {
 
 	        feedbackRs.close();
 	        feedbackStmt.close();
+	        PreparedStatement availableStmt =
+	                conn.prepareStatement(
+	                    "SELECT COUNT(*) AS total " +
+	                    "FROM rooms " +
+	                    "WHERE is_available=TRUE"
+	                );
+
+	        ResultSet availableRs =
+	                availableStmt.executeQuery();
+
+	        int availableRooms = 0;
+
+	        if(availableRs.next()){
+
+	            availableRooms =
+	                    availableRs.getInt("total");
+	        }
+
+	        model.addAttribute(
+	                "availableRooms",
+	                availableRooms
+	        );
+
+	        model.addAttribute(
+	                "economyAvailable",
+	                getAvailableCount(conn, "Economy Room")
+	        );
+
+	        model.addAttribute(
+	                "normalAvailable",
+	                getAvailableCount(conn, "Normal Room")
+	        );
+
+	        model.addAttribute(
+	                "familyAvailable",
+	                getAvailableCount(conn, "Family Room")
+	        );
+
+	        model.addAttribute(
+	                "vipAvailable",
+	                getAvailableCount(conn, "VIP Suite")
+	        );
+
+	        availableRs.close();
+	        availableStmt.close();
 	        conn.close();
 
 	    } catch(Exception e) {
@@ -239,9 +293,10 @@ public class AuthController {
 	    model.addAttribute("cancelledBookings", cancelledBookings);
 	    model.addAttribute("users", users);
 	    model.addAttribute("feedbackList", feedbackList);
-	    model.addAttribute("availableRooms", 30);
+	    
 	    return "admin-dashboard";
 	}
+	
 	@GetMapping("/admin-login")
 	public String adminLogin() {
 	    return "admin-login";
@@ -314,7 +369,18 @@ public class AuthController {
 	        stmt.setInt(3, bookingId);
 
 	        stmt.executeUpdate();
+	        PreparedStatement roomStmt =
+	                conn.prepareStatement(
+	                    "UPDATE rooms " +
+	                    "SET is_available=FALSE " +
+	                    "WHERE room_number=?"
+	                );
 
+	        roomStmt.setString(1, assignedRoom);
+
+	        roomStmt.executeUpdate();
+
+	        roomStmt.close();
 	        stmt.close();
 	        conn.close();
 
@@ -380,7 +446,21 @@ public class AuthController {
 	        ResultSet rs = getStmt.executeQuery();
 
 	        if(rs.next()) {
+	        	String roomNumber =
+	        	        rs.getString("room_number");
 
+	        	PreparedStatement roomStmt =
+	        	        conn.prepareStatement(
+	        	            "UPDATE rooms " +
+	        	            "SET is_available=TRUE " +
+	        	            "WHERE room_number=?"
+	        	        );
+
+	        	roomStmt.setString(1, roomNumber);
+
+	        	roomStmt.executeUpdate();
+
+	        	roomStmt.close();
 	            String insertSql =
 	                    "INSERT INTO checkout_records " +
 	                    "(booking_id, full_name, contact_number, email, check_in_date, check_out_date, room_type, guests, price, payment_method, room_number) " +
