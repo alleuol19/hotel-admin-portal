@@ -315,13 +315,6 @@ tr:last-child td{
 }
 
 /* BUTTONS */
-
-.action-group{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-}
-
 .btn{
     padding:8px 14px;
     border:none;
@@ -430,7 +423,42 @@ tr:last-child td{
         grid-template-columns:1fr;
     }
 }
+.action-group{
+    display:flex;
+    align-items:flex-end;
+    gap:10px;
+    flex-wrap:wrap;
+}
 
+.confirm-form{
+     display:flex;
+    align-items:flex-end;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.payment-box{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+}
+
+.payment-box span{
+    font-size:0.68rem;
+    color:#8f93b2;
+    font-weight:600;
+    white-space:nowrap;
+}
+
+.payment-select{
+    min-width:95px;
+    height:38px;
+}
+
+.btn-confirm,
+.btn-cancel{
+    height:38px;
+}
 </style>
 </head>
 
@@ -664,19 +692,15 @@ tr:last-child td{
                         </span>
                     </td>
                     <td>
-                        <div class="action-group">
-                            <form th:action="@{/confirm-booking}" method="post">
+                       <div class="action-group">
+                          <form th:action="@{/confirm-booking}" method="post" class="confirm-form">
     <input type="hidden"
            name="bookingId"
            th:value="${booking.id}">
      <input type="hidden"
        name="confirmedReference"
        class="confirmedReferenceInput">
-    <div style="
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-">
+    <div class="payment-box">
     <span style="
         font-size:0.72rem;
         color:#8f93b2;
