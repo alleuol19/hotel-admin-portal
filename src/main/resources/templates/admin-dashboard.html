@@ -675,12 +675,28 @@ tr:last-child td{
        name="confirmedReference"
        class="confirmedReferenceInput">
 
+    <div style="
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+">
+
+    <span style="
+        font-size:0.72rem;
+        color:#8f93b2;
+        font-weight:600;
+    ">
+        Payment Upon Confirmation
+    </span>
+
     <select class="payment-select" name="paymentMethod">
+
         <option>Cash</option>
         <option>Card</option>
         <option>Maya</option>
         <option>GCash</option>
     </select>
+</div>
 
     <select class="payment-select" name="roomNumber" required>
         <option value="">Room</option>
