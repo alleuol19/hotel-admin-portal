@@ -146,7 +146,8 @@ public class AuthController {
 	            booking.put("status", rs.getString("status"));
 	            booking.put("paymentMethod", rs.getString("payment_method"));
 	            booking.put("roomNumber", rs.getString("room_number"));
-	            
+	            booking.put("bookingReference",
+	            rs.getString("booking_reference"));
 	            booking.put(
 	            	    "createdAt",
 	            	    rs.getString("created_at")
@@ -333,13 +334,41 @@ public class AuthController {
 	public String confirmBooking(
 	        @RequestParam int bookingId,
 	        @RequestParam String paymentMethod,
-	        @RequestParam String roomNumber
+	        @RequestParam String roomNumber,
+	        @RequestParam String confirmedReference
 	) {
 
 	    try {
 
 	        Connection conn = DriverManager.getConnection(url, dbUser, dbPass);
+	        String verifySql =
+	        		"SELECT booking_reference FROM booking WHERE id=?";
 
+	        		PreparedStatement verifyStmt =
+	        		conn.prepareStatement(verifySql);
+
+	        		verifyStmt.setInt(1, bookingId);
+
+	        		ResultSet verifyRs =
+	        		verifyStmt.executeQuery();
+
+	        		if(verifyRs.next()){
+
+	        		    String actualReference =
+	        		    verifyRs.getString("booking_reference");
+
+	        		    if(!actualReference.equals(confirmedReference)){
+
+	        		        verifyRs.close();
+	        		        verifyStmt.close();
+	        		        conn.close();
+
+	        		        return "redirect:/admin-dashboard";
+	        		    }
+	        		}
+
+	        		verifyRs.close();
+	        		verifyStmt.close();
 	        String roomType = "";
 
 	        String getRoom =

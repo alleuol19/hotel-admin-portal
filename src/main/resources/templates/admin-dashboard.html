@@ -635,9 +635,10 @@ tr:last-child td{
             <thead>
 			<tr>
     	<th>#</th>
-    	<th>GUEST</th>
-   	 	<th>ROOM</th>
-   	 	<th>ROOM NO.</th>
+		<th>GUEST</th>
+		<th>ROOM</th>
+		<th>REFERENCE NO.</th>
+		<th>ROOM NO.</th>
     	<th>GUESTS</th>
     	<th>CHECK-IN</th>
     	<th>CHECK-OUT</th>
@@ -648,17 +649,13 @@ tr:last-child td{
 		</thead>
             <tbody>
                 <tr th:each="booking : ${pendingBookings}">
-
                     <td th:text="${booking.id}"></td>
-
                     <td th:text="${booking.fullName}"></td>
-
                     <td th:text="${booking.roomType}"></td>
+                    <td th:text="${booking.bookingReference}"></td>
                     <td>Not assigned</td>
-
 					<td th:text="${booking.guests}"></td>
                     <td th:text="${booking.checkInDate}"></td>
-
                     <td th:text="${booking.checkOutDate}"></td>
                     <td>
                         ₱<span th:text="${booking.price}"></span>
@@ -668,20 +665,22 @@ tr:last-child td{
                             Pending
                         </span>
                     </td>
-
                     <td>
 
                         <div class="action-group">
 
                             <form th:action="@{/confirm-booking}" method="post">
-
     <input type="hidden"
            name="bookingId"
            th:value="${booking.id}">
+     <input type="hidden"
+       name="confirmedReference"
+       class="confirmedReferenceInput">
 
     <select class="payment-select" name="paymentMethod">
         <option>Cash</option>
         <option>Card</option>
+        <option>Maya</option>>
         <option>GCash</option>
     </select>
 
@@ -694,9 +693,12 @@ tr:last-child td{
         </option>
     </select>
 
-    <button class="btn btn-confirm">
-        Confirm
-    </button>
+    <button type="button"
+        class="btn btn-confirm"
+        th:attr="data-ref=${booking.bookingReference}"
+        onclick="openConfirmModal(this)">
+    Confirm
+</button>
 
 </form>
 
@@ -722,6 +724,7 @@ tr:last-child td{
     <td th:text="${booking.id}"></td>
     <td th:text="${booking.fullName}"></td>
     <td th:text="${booking.roomType}"></td>
+    <td th:text="${booking.bookingReference}"></td>
     <td th:text="${booking.roomNumber}"></td>
     <td th:text="${booking.guests}"></td>
     <td th:text="${booking.checkInDate}"></td>
@@ -997,6 +1000,128 @@ function searchReservations(){
         : "none";
     });
 }
+let currentConfirmForm = null;
+let currentReference = "";
+
+function openConfirmModal(button){
+
+    currentConfirmForm =
+    button.closest("form");
+
+    currentReference =
+    button.dataset.ref;
+
+    document.getElementById("confirmReference").value = "";
+
+    document.getElementById("confirmError")
+    .style.display = "none";
+
+    document.getElementById("confirm-modal")
+    .style.display = "flex";
+}
+
+function submitConfirmBooking(){
+
+    const entered =
+    document.getElementById("confirmReference")
+    .value.trim();
+
+    if(entered !== currentReference){
+
+        document.getElementById("confirmError")
+        .style.display = "block";
+
+        return;
+    }
+
+    currentConfirmForm
+    .querySelector(".confirmedReferenceInput")
+    .value = entered;
+
+    currentConfirmForm.submit();
+}
+
+document.getElementById("confirm-modal")
+.addEventListener("click", function(e){
+
+    if(e.target === this){
+
+        this.style.display = "none";
+    }
+});
 </script>
+<div class="modal-overlay"
+     id="confirm-modal"
+     style="
+        display:none;
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,0.7);
+        z-index:9999;
+        align-items:center;
+        justify-content:center;
+     ">
+
+    <div style="
+        width:420px;
+        background:#131320;
+        border-radius:18px;
+        padding:30px;
+        border:1px solid rgba(255,255,255,0.08);
+        text-align:center;
+    ">
+
+        <h2 style="
+            color:#63a0ff;
+            margin-bottom:15px;
+        ">
+            Confirm Reservation
+        </h2>
+
+        <p style="
+            color:#8f93b2;
+            margin-bottom:18px;
+        ">
+            Enter booking reference number
+            to continue.
+        </p>
+
+        <input type="text"
+               id="confirmReference"
+               placeholder="Booking Reference"
+               style="
+                    width:100%;
+                    padding:14px;
+                    border-radius:10px;
+                    border:1px solid rgba(255,255,255,0.08);
+                    background:#1d1d2d;
+                    color:white;
+                    margin-bottom:14px;
+               ">
+
+        <p id="confirmError"
+           style="
+                display:none;
+                color:#ff6666;
+                font-size:0.82rem;
+                margin-bottom:12px;
+           ">
+            Incorrect booking reference number.
+        </p>
+
+        <button class="btn btn-confirm"
+                style="
+                    width:100%;
+                    padding:14px;
+                "
+                onclick="submitConfirmBooking()">
+
+            Confirm Booking
+
+        </button>
+
+    </div>
+
+</div>
 </body>
 </html>
