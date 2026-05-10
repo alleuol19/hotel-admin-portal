@@ -637,7 +637,6 @@ tr:last-child td{
     	<th>#</th>
 		<th>GUEST</th>
 		<th>ROOM</th>
-		<th>REFERENCE NO.</th>
 		<th>ROOM NO.</th>
     	<th>GUESTS</th>
     	<th>CHECK-IN</th>
@@ -652,7 +651,6 @@ tr:last-child td{
                     <td th:text="${booking.id}"></td>
                     <td th:text="${booking.fullName}"></td>
                     <td th:text="${booking.roomType}"></td>
-                    <td th:text="${booking.bookingReference}"></td>
                     <td>Not assigned</td>
 					<td th:text="${booking.guests}"></td>
                     <td th:text="${booking.checkInDate}"></td>
@@ -724,7 +722,6 @@ tr:last-child td{
     <td th:text="${booking.id}"></td>
     <td th:text="${booking.fullName}"></td>
     <td th:text="${booking.roomType}"></td>
-    <td th:text="${booking.bookingReference}"></td>
     <td th:text="${booking.roomNumber}"></td>
     <td th:text="${booking.guests}"></td>
     <td th:text="${booking.checkInDate}"></td>
@@ -983,7 +980,23 @@ tr:last-child td{
         padding:30px;
         border:1px solid rgba(255,255,255,0.08);
         text-align:center;
+        position:relative;
     ">
+    <button onclick="
+document.getElementById('confirm-modal').style.display='none'
+"
+style="
+    position:absolute;
+    top:14px;
+    right:16px;
+    background:none;
+    border:none;
+    color:#8f93b2;
+    font-size:1.2rem;
+    cursor:pointer;
+">
+    ✕
+</button>
 
         <h2 style="
             color:#63a0ff;
@@ -1022,20 +1035,38 @@ tr:last-child td{
            ">
             Incorrect booking reference number.
         </p>
+        <div style="
+    display:flex;
+    gap:10px;
+">
 
-        <button class="btn btn-confirm"
-                style="
-                    width:100%;
-                    padding:14px;
-                "
-                onclick="submitConfirmBooking()">
+    <button class="btn btn-confirm"
+            style="
+                flex:1;
+                padding:14px;
+            "
+            onclick="submitConfirmBooking()">
 
-            Confirm Booking
+        Confirm Booking
 
-        </button>
+    </button>
 
+    <button type="button"
+            class="btn btn-cancel"
+            style="
+                flex:1;
+                padding:14px;
+            "
+            onclick="
+            document.getElementById('confirm-modal')
+            .style.display='none'
+            ">
+
+        Close
+
+    </button>
+</div>
     </div>
-
 </div>
 <script>
 function showPage(id, element){
