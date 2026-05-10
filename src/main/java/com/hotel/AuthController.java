@@ -14,94 +14,66 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import jakarta.servlet.http.HttpSession;
-
-
 
 @Controller
 public class AuthController {
-
 	static String url = "jdbc:mysql://mysql.railway.internal:3306/railway";
 	static String dbUser = "root";
-	static String dbPass = "qIOlaWsFbfipeyehbTLbiscGTAvfJyNv";
-	
-	
+	static String dbPass = "qIOlaWsFbfipeyehbTLbiscGTAvfJyNv";	
 	@GetMapping("/")
 	public String home() {
 	    return "redirect:/admin-login";
 	}
-	
-	
 	private List<String> getAvailableRooms(
 	        Connection conn,
 	        String roomType
 	){
-
 	    List<String> rooms =
 	            new ArrayList<>();
-
 	    try{
-
 	        String sql =
 	                "SELECT room_number " +
 	                "FROM rooms " +
 	                "WHERE room_type=? " +
 	                "AND is_available=TRUE";
-
 	        PreparedStatement stmt =
 	                conn.prepareStatement(sql);
-
 	        stmt.setString(1, roomType);
-
 	        ResultSet rs =
 	                stmt.executeQuery();
-
 	        while(rs.next()){
-
 	            rooms.add(
 	                rs.getString("room_number")
 	            );
 	        }
-
 	        rs.close();
 	        stmt.close();
-
 	    }catch(Exception e){
-
 	        e.printStackTrace();
 	    }
-
 	    return rooms;
 	}
 	private int getAvailableCount(
 	        Connection conn,
 	        String roomType
 	)throws Exception{
-
 	    String sql =
 	            "SELECT COUNT(*) " +
 	            "FROM rooms " +
 	            "WHERE room_type=? " +
 	            "AND is_available=TRUE";
-
 	    PreparedStatement stmt =
 	            conn.prepareStatement(sql);
-
 	    stmt.setString(1, roomType);
-
 	    ResultSet rs =
 	            stmt.executeQuery();
-
 	    int count = 0;
-
 	    if(rs.next()){
 	        count = rs.getInt(1);
 	    }
-
 	    rs.close();
 	    stmt.close();
-
 	    return count;
 	}
 	@GetMapping("/admin-dashboard")
@@ -109,31 +81,21 @@ public class AuthController {
 	        HttpSession session,
 	        Model model
 	) {
-
 	    if(session.getAttribute("admin") == null) {
 	        return "redirect:/admin-login";
 	    }
-
 	    List<Map<String, Object>> pendingBookings = new ArrayList<>();
 	    List<Map<String, Object>> successfulBookings = new ArrayList<>();
 	    List<Map<String, Object>> cancelledBookings = new ArrayList<>();
 	    List<Map<String, Object>> users = new ArrayList<>();
 	    List<Map<String, Object>> feedbackList = new ArrayList<>();
-
 	    try {
-
 	        Connection conn = DriverManager.getConnection(url, dbUser, dbPass);
-
 	        String sql = "SELECT * FROM booking ORDER BY id DESC";
-
 	        PreparedStatement stmt = conn.prepareStatement(sql);
-
 	        ResultSet rs = stmt.executeQuery();
-
 	        while(rs.next()) {
-
 	            Map<String, Object> booking = new HashMap<>();
-
 	            booking.put("id", rs.getInt("id"));
 	            booking.put("fullName", rs.getString("full_name"));
 	            booking.put("contactNumber", rs.getString("contact_number"));
@@ -153,17 +115,13 @@ public class AuthController {
 	            	    rs.getString("created_at")
 	            	);
 	            String status = rs.getString("status");
-
 	            if(status.equals("PENDING")) {
-
 	                List<String> availableRooms =
 	                        getAvailableRooms(
 	                                conn,
 	                                rs.getString("room_type")
 	                        );
-
 	                booking.put("availableRooms", availableRooms);
-
 	                pendingBookings.add(booking);
 	            }
 	            else if(status.equals("SUCCESSFUL")) {
@@ -174,233 +132,157 @@ public class AuthController {
 	            }
 	        }
 	        double totalRevenue = 0;
-
 	        for(Map<String,Object> booking : successfulBookings){
 
 	            totalRevenue += Double.parseDouble(
 	                booking.get("price").toString()
-	            );
-	        }
-
+	            );}
 	        model.addAttribute("totalRevenue", totalRevenue);
-
 	        rs.close();
 	        stmt.close();
 	        String userSql = "SELECT * FROM users ORDER BY id DESC";
-
 	        PreparedStatement userStmt =
 	                conn.prepareStatement(userSql);
-
 	        ResultSet userRs = userStmt.executeQuery();
-
 	        while(userRs.next()) {
-
 	            Map<String, Object> user = new HashMap<>();
-
 	            user.put("id", userRs.getInt("id"));
 	            user.put("fullName", userRs.getString("full_name"));
 	            user.put("email", userRs.getString("email"));
-
-	            users.add(user);
-	        }
-
+	            users.add(user);}
 	        userRs.close();
 	        userStmt.close();
 	        String feedbackSql =
 	                "SELECT * FROM feedback ORDER BY id DESC";
-
 	        PreparedStatement feedbackStmt =
 	                conn.prepareStatement(feedbackSql);
-
 	        ResultSet feedbackRs =
 	                feedbackStmt.executeQuery();
-
 	        while(feedbackRs.next()) {
-
 	            Map<String, Object> feedback =
 	                    new HashMap<>();
-
 	            feedback.put("id",
 	                    feedbackRs.getInt("id"));
-
 	            feedback.put("userName",
 	                    feedbackRs.getString("user_name"));
-
 	            feedback.put("rating",
 	                    feedbackRs.getInt("rating"));
-
 	            feedback.put("message",
 	                    feedbackRs.getString("message"));
-
 	            feedback.put("createdAt",
 	                    feedbackRs.getString("created_at"));
-
-	            feedbackList.add(feedback);
-	        }
-
+	            feedbackList.add(feedback);}
 	        feedbackRs.close();
 	        feedbackStmt.close();
 	        PreparedStatement availableStmt =
 	                conn.prepareStatement(
 	                    "SELECT COUNT(*) AS total " +
 	                    "FROM rooms " +
-	                    "WHERE is_available=TRUE"
-	                );
-
+	                    "WHERE is_available=TRUE");
 	        ResultSet availableRs =
-	                availableStmt.executeQuery();
-
+	            availableStmt.executeQuery();
 	        int availableRooms = 0;
-
 	        if(availableRs.next()){
-
 	            availableRooms =
-	                    availableRs.getInt("total");
-	        }
-
+	            availableRs.getInt("total");}
 	        model.addAttribute(
 	                "availableRooms",
-	                availableRooms
-	        );
-
+	                availableRooms);
 	        model.addAttribute(
 	                "economyAvailable",
-	                getAvailableCount(conn, "Economy Room")
-	        );
-
+	                getAvailableCount(conn, "Economy Room"));
 	        model.addAttribute(
 	                "normalAvailable",
-	                getAvailableCount(conn, "Normal Room")
-	        );
-
+	                getAvailableCount(conn, "Normal Room"));
 	        model.addAttribute(
 	                "familyAvailable",
-	                getAvailableCount(conn, "Family Room")
-	        );
-
+	                getAvailableCount(conn, "Family Room"));
 	        model.addAttribute(
 	                "vipAvailable",
-	                getAvailableCount(conn, "VIP Suite")
-	        );
-
+	                getAvailableCount(conn, "VIP Suite"));
 	        availableRs.close();
 	        availableStmt.close();
 	        conn.close();
-
 	    } catch(Exception e) {
 
 	        e.printStackTrace();
-
 	    }
-
 	    model.addAttribute("pendingBookings", pendingBookings);
 	    model.addAttribute("successfulBookings", successfulBookings);
 	    model.addAttribute("cancelledBookings", cancelledBookings);
 	    model.addAttribute("users", users);
 	    model.addAttribute("feedbackList", feedbackList);
-	    
 	    return "admin-dashboard";
 	}
-	
 	@GetMapping("/admin-login")
 	public String adminLogin() {
 	    return "admin-login";
 	}
-
 	@PostMapping("/admin-access")
 	public String adminAccess(
 	        @RequestParam String username,
 	        @RequestParam String password,
 	        HttpSession session
 	) {
-
 		if (
 			    (username.equals("admin") ||
 			     username.equals("Admin") ||
 			     username.equals("ADMIN"))
 			    &&
-			    password.equals("1234")
-			)
-		{
+			    password.equals("1234")){
 	        session.setAttribute("admin", true);
 
-	        return "redirect:/admin-dashboard";
-	    }
-
-	    return "redirect:/admin-login";
-	}
-
+	        return "redirect:/admin-dashboard";}
+	    return "redirect:/admin-login";}
 	@PostMapping("/confirm-booking")
 	public String confirmBooking(
 	        @RequestParam int bookingId,
 	        @RequestParam String paymentMethod,
 	        @RequestParam String roomNumber,
-	        @RequestParam String confirmedReference
-	) {
-
+	        @RequestParam String confirmedReference) {
 	    try {
-
 	        Connection conn = DriverManager.getConnection(url, dbUser, dbPass);
 	        String verifySql =
 	        		"SELECT booking_reference FROM booking WHERE id=?";
-
 	        		PreparedStatement verifyStmt =
 	        		conn.prepareStatement(verifySql);
-
 	        		verifyStmt.setInt(1, bookingId);
-
 	        		ResultSet verifyRs =
 	        		verifyStmt.executeQuery();
-
 	        		if(verifyRs.next()){
-
 	        		    String actualReference =
 	        		    verifyRs.getString("booking_reference");
-
 	        		    if(!actualReference.equals(confirmedReference)){
-
 	        		        verifyRs.close();
 	        		        verifyStmt.close();
 	        		        conn.close();
-
 	        		        return "redirect:/admin-dashboard";
 	        		    }
 	        		}
-
 	        		verifyRs.close();
 	        		verifyStmt.close();
 	        String roomType = "";
-
 	        String getRoom =
 	                "SELECT room_type FROM booking WHERE id=?";
-
 	        PreparedStatement getStmt =
 	                conn.prepareStatement(getRoom);
-
 	        getStmt.setInt(1, bookingId);
-
 	        ResultSet rs = getStmt.executeQuery();
-
 	        if(rs.next()) {
 	            roomType = rs.getString("room_type");
 	        }
-
 	        String assignedRoom = roomNumber;
-
 	        String sql =
 	                "UPDATE booking " +
 	                "SET status='SUCCESSFUL', " +
 	                "payment_method=?, " +
 	                "room_number=? " +
 	                "WHERE id=?";
-
 	        PreparedStatement stmt =
 	                conn.prepareStatement(sql);
-
 	        stmt.setString(1, paymentMethod);
 	        stmt.setString(2, assignedRoom);
 	        stmt.setInt(3, bookingId);
-
 	        stmt.executeUpdate();
 	        PreparedStatement roomStmt =
 	                conn.prepareStatement(
@@ -408,100 +290,68 @@ public class AuthController {
 	                    "SET is_available=FALSE " +
 	                    "WHERE room_number=?"
 	                );
-
 	        roomStmt.setString(1, assignedRoom);
-
 	        roomStmt.executeUpdate();
-
 	        roomStmt.close();
 	        stmt.close();
 	        conn.close();
 
 	    } catch(Exception e) {
-
 	        e.printStackTrace();
-
 	    }
-
 	    return "redirect:/admin-dashboard";
 	}
-
 	@PostMapping("/cancel-booking")
 	public String cancelBooking(
 	        @RequestParam int bookingId
 	) {
-
 	    try {
-
 	        Connection conn = DriverManager.getConnection(url, dbUser, dbPass);
-
 	        String sql =
 	                "UPDATE booking " +
 	                "SET status='CANCELED' " +
 	                "WHERE id=?";
-
 	        PreparedStatement stmt =
 	                conn.prepareStatement(sql);
-
 	        stmt.setInt(1, bookingId);
-
 	        stmt.executeUpdate();
-
 	        stmt.close();
 	        conn.close();
-
 	    } catch(Exception e) {
-
 	        e.printStackTrace();
-
 	    }
-
 	    return "redirect:/admin-dashboard";
 	}
-
 	@PostMapping("/checkout-booking")
 	public String checkoutBooking(
 	        @RequestParam int bookingId
 	) {
-
 	    try {
-
 	        Connection conn = DriverManager.getConnection(url, dbUser, dbPass);
-
 	        String getSql =
 	                "SELECT * FROM booking WHERE id=?";
-
 	        PreparedStatement getStmt =
 	                conn.prepareStatement(getSql);
-
 	        getStmt.setInt(1, bookingId);
-
 	        ResultSet rs = getStmt.executeQuery();
-
 	        if(rs.next()) {
 	        	String roomNumber =
 	        	        rs.getString("room_number");
-
 	        	PreparedStatement roomStmt =
 	        	        conn.prepareStatement(
 	        	            "UPDATE rooms " +
 	        	            "SET is_available=TRUE " +
 	        	            "WHERE room_number=?"
 	        	        );
-
 	        	roomStmt.setString(1, roomNumber);
-
 	        	roomStmt.executeUpdate();
-
 	        	roomStmt.close();
 	            String insertSql =
 	                    "INSERT INTO checkout_records " +
 	                    "(booking_id, full_name, contact_number, email, check_in_date, check_out_date, room_type, guests, price, payment_method, room_number) " +
 	                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
 	            PreparedStatement insertStmt =
 	                    conn.prepareStatement(insertSql);
-
 	            insertStmt.setInt(1, rs.getInt("id"));
 	            insertStmt.setString(2, rs.getString("full_name"));
 	            insertStmt.setString(3, rs.getString("contact_number"));
@@ -513,31 +363,20 @@ public class AuthController {
 	            insertStmt.setDouble(9, rs.getDouble("price"));
 	            insertStmt.setString(10, rs.getString("payment_method"));
 	            insertStmt.setString(11, rs.getString("room_number"));
-
 	            insertStmt.executeUpdate();
-
 	            insertStmt.close();
 	        }
-
 	        String deleteSql =
 	                "DELETE FROM booking WHERE id=?";
-
 	        PreparedStatement deleteStmt =
 	                conn.prepareStatement(deleteSql);
-
 	        deleteStmt.setInt(1, bookingId);
-
 	        deleteStmt.executeUpdate();
-
 	        deleteStmt.close();
 	        conn.close();
-
 	    } catch(Exception e) {
-
 	        e.printStackTrace();
-
 	    }
-
 	    return "redirect:/admin-dashboard";
 	}
 	@GetMapping("/admin-logout")

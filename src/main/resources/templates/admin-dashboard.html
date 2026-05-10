@@ -680,7 +680,7 @@ tr:last-child td{
     <select class="payment-select" name="paymentMethod">
         <option>Cash</option>
         <option>Card</option>
-        <option>Maya</option>>
+        <option>Maya</option>
         <option>GCash</option>
     </select>
 
@@ -964,8 +964,80 @@ tr:last-child td{
 
 </div>
 </div>
-<script>
+<div class="modal-overlay"
+     id="confirm-modal"
+     style="
+        display:none;
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,0.7);
+        z-index:9999;
+        align-items:center;
+        justify-content:center;
+     ">
 
+    <div style="
+        width:420px;
+        background:#131320;
+        border-radius:18px;
+        padding:30px;
+        border:1px solid rgba(255,255,255,0.08);
+        text-align:center;
+    ">
+
+        <h2 style="
+            color:#63a0ff;
+            margin-bottom:15px;
+        ">
+            Confirm Reservation
+        </h2>
+
+        <p style="
+            color:#8f93b2;
+            margin-bottom:18px;
+        ">
+            Enter booking reference number
+            to continue.
+        </p>
+
+        <input type="text"
+               id="confirmReference"
+               placeholder="Booking Reference"
+               style="
+                    width:100%;
+                    padding:14px;
+                    border-radius:10px;
+                    border:1px solid rgba(255,255,255,0.08);
+                    background:#1d1d2d;
+                    color:white;
+                    margin-bottom:14px;
+               ">
+
+        <p id="confirmError"
+           style="
+                display:none;
+                color:#ff6666;
+                font-size:0.82rem;
+                margin-bottom:12px;
+           ">
+            Incorrect booking reference number.
+        </p>
+
+        <button class="btn btn-confirm"
+                style="
+                    width:100%;
+                    padding:14px;
+                "
+                onclick="submitConfirmBooking()">
+
+            Confirm Booking
+
+        </button>
+
+    </div>
+
+</div>
+<script>
 function showPage(id, element){
 
     document.querySelectorAll('.page').forEach(page=>{
@@ -1050,78 +1122,5 @@ document.getElementById("confirm-modal")
     }
 });
 </script>
-<div class="modal-overlay"
-     id="confirm-modal"
-     style="
-        display:none;
-        position:fixed;
-        inset:0;
-        background:rgba(0,0,0,0.7);
-        z-index:9999;
-        align-items:center;
-        justify-content:center;
-     ">
-
-    <div style="
-        width:420px;
-        background:#131320;
-        border-radius:18px;
-        padding:30px;
-        border:1px solid rgba(255,255,255,0.08);
-        text-align:center;
-    ">
-
-        <h2 style="
-            color:#63a0ff;
-            margin-bottom:15px;
-        ">
-            Confirm Reservation
-        </h2>
-
-        <p style="
-            color:#8f93b2;
-            margin-bottom:18px;
-        ">
-            Enter booking reference number
-            to continue.
-        </p>
-
-        <input type="text"
-               id="confirmReference"
-               placeholder="Booking Reference"
-               style="
-                    width:100%;
-                    padding:14px;
-                    border-radius:10px;
-                    border:1px solid rgba(255,255,255,0.08);
-                    background:#1d1d2d;
-                    color:white;
-                    margin-bottom:14px;
-               ">
-
-        <p id="confirmError"
-           style="
-                display:none;
-                color:#ff6666;
-                font-size:0.82rem;
-                margin-bottom:12px;
-           ">
-            Incorrect booking reference number.
-        </p>
-
-        <button class="btn btn-confirm"
-                style="
-                    width:100%;
-                    padding:14px;
-                "
-                onclick="submitConfirmBooking()">
-
-            Confirm Booking
-
-        </button>
-
-    </div>
-
-</div>
 </body>
 </html>
