@@ -426,7 +426,28 @@ tr:last-child td{
     gap:8px;
     flex-wrap:wrap;
 }
+.room-select{
+    height:38px;
+    min-width:95px;
 
+    padding:0 12px;
+
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.08);
+
+    background:#1b1b2a;
+    color:#ffffff;
+
+    font-size:0.82rem;
+    font-weight:500;
+
+    outline:none;
+}
+
+.room-select:focus{
+    border-color:#2f7df6;
+    box-shadow:0 0 0 3px rgba(47,125,246,0.15);
+}
 
 .btn-confirm,
 .btn-cancel{
@@ -675,7 +696,7 @@ tr:last-child td{
      <input type="hidden"
        name="confirmedReference"
        class="confirmedReferenceInput">
-    <select class="payment-select" name="roomNumber" required>
+    <select class="room-select" name="roomNumber" required>
         <option value="">Room</option>
 
         <option th:each="room : ${booking.availableRooms}"
