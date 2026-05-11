@@ -237,7 +237,6 @@ public class AuthController {
 	@PostMapping("/confirm-booking")
 	public String confirmBooking(
 	        @RequestParam int bookingId,
-	        @RequestParam String paymentMethod,
 	        @RequestParam String roomNumber,
 	        @RequestParam String confirmedReference) {
 	    try {
@@ -275,14 +274,12 @@ public class AuthController {
 	        String sql =
 	                "UPDATE booking " +
 	                "SET status='SUCCESSFUL', " +
-	                "payment_method=?, " +
 	                "room_number=? " +
 	                "WHERE id=?";
 	        PreparedStatement stmt =
 	                conn.prepareStatement(sql);
-	        stmt.setString(1, paymentMethod);
-	        stmt.setString(2, assignedRoom);
-	        stmt.setInt(3, bookingId);
+	        stmt.setString(1, assignedRoom);
+	        stmt.setInt(2, bookingId);
 	        stmt.executeUpdate();
 	        PreparedStatement roomStmt =
 	                conn.prepareStatement(
