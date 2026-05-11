@@ -700,23 +700,6 @@ tr:last-child td{
      <input type="hidden"
        name="confirmedReference"
        class="confirmedReferenceInput">
-    <div class="payment-box">
-    <span style="
-        font-size:0.72rem;
-        color:#8f93b2;
-        font-weight:600; ">
-        Payment Upon Confirmation
-    </span>
-	<select class="payment-select"
-        name="paymentMethod"
-        required>
-    <option value="">Payment</option>
-    <option>Cash</option>
-    <option>Card</option>
-    <option>Maya</option>
-    <option>GCash</option>
-</select>
-</div>
     <select class="payment-select" name="roomNumber" required>
         <option value="">Room</option>
 
@@ -745,12 +728,9 @@ tr:last-child td{
                             </form>
 
                         </div>
-
                     </td>
-
                 </tr>
-
-                <tr th:each="booking : ${successfulBookings}">
+        <tr th:each="booking : ${successfulBookings}">
     <td th:text="${booking.id}"></td>
     <td th:text="${booking.fullName}"></td>
     <td th:text="${booking.roomType}"></td>
@@ -758,49 +738,32 @@ tr:last-child td{
     <td th:text="${booking.guests}"></td>
     <td th:text="${booking.checkInDate}"></td>
     <td th:text="${booking.checkOutDate}"></td>
-
-
     <td>
         ₱<span th:text="${booking.price}"></span>
     </td>
     <td>
         <span class="status success">Confirmed</span>
     </td>
-
     <td>
         <form th:action="@{/checkout-booking}" method="post">
             <input type="hidden" name="bookingId" th:value="${booking.id}">
             <button class="btn btn-checkout">Check Out</button>
         </form>
     </td>
-
 </tr>
-
             </tbody>
-
         </table>
-
     </div>
-
 </div>
-
 <!-- ROOMS -->
-
 <div class="page" id="rooms">
-
     <h1 class="page-title">Room Management</h1>
     <p class="page-sub">Room availability and details</p>
-
     <div class="rooms-grid">
-
         <div class="room-card">
-
             <img src="/images/economy-room.jpg">
-
             <div class="room-content">
-
                 <h3>Economy Room</h3>
-
                 <p>₱3,500/night · Up to 2 guests</p>
 				<p style="color:#4effaa;font-size:0.8rem;">
     			Available Rooms:
@@ -813,17 +776,11 @@ tr:last-child td{
                 <span class="tag">Fresh Towels</span>
                 <span class="tag">Complimentary Water</span>
             </div>
-
         </div>
-
         <div class="room-card">
-
             <img src="/images/normal-room.jpg">
-
             <div class="room-content">
-
                 <h3>Normal Room</h3>
-
                 <p>₱5,500/night · Up to 4 guests</p>
                 <p style="color:#4effaa;font-size:0.8rem;">
     			Available Rooms:
@@ -838,16 +795,11 @@ tr:last-child td{
                 <span class="tag">Room Service</span>
                 <span class="tag">Fresh Towels</span>
             </div>
-
         </div>
         <div class="room-card">
-
     <img src="/images/family-room.jpg">
-
     <div class="room-content">
-
         <h3>Family Room</h3>
-
         <p>₱7,500/night · Up to 6 guests</p>
         <p style="color:#4effaa;font-size:0.8rem;">
     	Available Rooms:
@@ -861,18 +813,12 @@ tr:last-child td{
         <span class="tag">Daily Housekeeping</span>
         <span class="tag">Fresh Towels</span>
         <span class="tag">Complimentary Water</span>
-
     </div>
-
 </div>
         <div class="room-card">
-
             <img src="/images/vip-suite.png">
-
             <div class="room-content">
-
                 <h3>VIP Suite</h3>
-
                 <p>₱10,000/night · Up to 8 guests</p>
                 <p style="color:#4effaa;font-size:0.8rem;">
     			Available Rooms:
@@ -889,19 +835,13 @@ tr:last-child td{
                 <span class="tag">Private Balcony</span>
                 <span class="tag">Premium Toiletries</span>
             </div>
-
         </div>
-
     </div>
-
 </div>
-
 <div class="page" id="feedback">
-
     <h1 class="page-title">Guest Feedback</h1>
     <p class="page-sub">Feedback submitted by registered users</p>
     <div class="table-box">
-
         <table>
             <thead>
                 <tr>
@@ -912,21 +852,15 @@ tr:last-child td{
                     <th>DATE</th>
                 </tr>
             </thead>
-
             <tbody>
             <tr th:if="${#lists.isEmpty(feedbackList)}">
-
     <td colspan="5"
         style="
             text-align:center;
             color:var(--muted);
-            padding:35px;
-        ">
-
+            padding:35px; ">
         No feedback submitted yet.
-
     </td>
-
 </tr>
                 <tr th:each="fb : ${feedbackList}">
                     <td th:text="${fb.id}"></td>
@@ -937,20 +871,13 @@ tr:last-child td{
                 </tr>
             </tbody>
         </table>
-
     </div>
-
 </div>
-
 <div class="page" id="users">
-
     <h1 class="page-title">Registered Users</h1>
     <p class="page-sub">Users who signed up on the website</p>
-
     <div class="table-box">
-
         <table>
-
             <thead>
                 <tr>
                     <th>#</th>
@@ -958,39 +885,24 @@ tr:last-child td{
                     <th>EMAIL</th>
                 </tr>
             </thead>
-
             <tbody>
-
                 <tr th:each="user : ${users}">
-
                     <td th:text="${user.id}"></td>
-
                     <td th:text="${user.fullName}"></td>
-
                     <td th:text="${user.email}"></td>
-
                 </tr>
-
             </tbody>
-
         </table>
-
     </div>
-
 </div>
-
 <footer style="
     text-align:center;
     padding:20px;
     color:var(--muted);
     border-top:1px solid var(--line);
-    margin-top:40px;
-">
-
+    margin-top:40px; ">
     © 2026 Hotel De Soleil Admin Panel
-
 </footer>
-
 </div>
 </div>
 <div class="modal-overlay"
@@ -1002,9 +914,7 @@ tr:last-child td{
         background:rgba(0,0,0,0.7);
         z-index:9999;
         align-items:center;
-        justify-content:center;
-     ">
-
+        justify-content:center; ">
     <div style="
         width:420px;
         background:#131320;
@@ -1012,11 +922,9 @@ tr:last-child td{
         padding:30px;
         border:1px solid rgba(255,255,255,0.08);
         text-align:center;
-        position:relative;
-    ">
+        position:relative;">
     <button onclick="
-document.getElementById('confirm-modal').style.display='none'
-"
+document.getElementById('confirm-modal').style.display='none' "
 style="
     position:absolute;
     top:14px;
@@ -1025,26 +933,18 @@ style="
     border:none;
     color:#8f93b2;
     font-size:1.2rem;
-    cursor:pointer;
-">
+    cursor:pointer; ">
     ✕
 </button>
-
         <h2 style="
             color:#63a0ff;
-            margin-bottom:15px;
-        ">
-            Confirm Reservation
-        </h2>
-
+            margin-bottom:15px; ">
+            Confirm Reservation </h2>
         <p style="
             color:#8f93b2;
-            margin-bottom:18px;
-        ">
+            margin-bottom:18px; ">
             Enter booking reference number
-            to continue.
-        </p>
-
+            to continue. </p>
         <input type="text"
                id="confirmReference"
                placeholder="Booking Reference"
@@ -1055,9 +955,7 @@ style="
                     border:1px solid rgba(255,255,255,0.08);
                     background:#1d1d2d;
                     color:white;
-                    margin-bottom:14px;
-               ">
-
+                    margin-bottom:14px; ">
         <p id="confirmError"
            style="
                 display:none;
@@ -1065,79 +963,57 @@ style="
                 font-size:0.82rem;
                 margin-bottom:12px;
            ">
-            Incorrect booking reference number.
-        </p>
+            Incorrect booking reference number.</p>
         <p id="confirmMissingError"
    style="
         display:none;
         color:#ff6666;
         font-size:0.82rem;
-        margin-bottom:12px;
-   ">
-    Please select payment method and room number first.
-</p>
+        margin-bottom:12px; ">
+    Please select a room number first.</p>
         <div style="
     display:flex;
-    gap:10px;
-">
-
+    gap:10px; ">
     <button class="btn btn-confirm"
             style="
                 flex:1;
-                padding:14px;
-            "
+                padding:14px; "
             onclick="submitConfirmBooking()">
-
         Confirm Booking
-
     </button>
-
     <button type="button"
             class="btn btn-cancel"
             style="
                 flex:1;
-                padding:14px;
-            "
+                padding:14px; "
             onclick="
             document.getElementById('confirm-modal')
-            .style.display='none'
-            ">
-
+            .style.display='none' ">
         Close
-
     </button>
 </div>
     </div>
 </div>
 <script>
 function showPage(id, element){
-
     document.querySelectorAll('.page').forEach(page=>{
         page.classList.remove('active');
     });
-
     document.getElementById(id).classList.add('active');
-
     document.querySelectorAll('.sidebar a').forEach(link=>{
         link.classList.remove('active');
     });
-
     element.classList.add('active');
 }
 function searchReservations(){
-
     let input =
     document.getElementById("reservationSearch")
     .value.toLowerCase();
-
     let rows =
     document.querySelectorAll("#reservations tbody tr");
-
     rows.forEach(row=>{
-
         let text =
         row.innerText.toLowerCase();
-
         row.style.display =
         text.includes(input)
         ? ""
@@ -1146,66 +1022,30 @@ function searchReservations(){
 }
 let currentConfirmForm = null;
 let currentReference = "";
-
-function openConfirmModal(button){
-
-    currentConfirmForm =
-    button.closest("form");
-
-    currentReference =
-    button.dataset.ref;
-
-    document.getElementById("confirmReference").value = "";
-
-    document.getElementById("confirmError")
-    .style.display = "none";
-    document.getElementById("confirmMissingError")
-    .style.display = "none";
-    document.getElementById("confirm-modal")
-    .style.display = "flex";
-}
-
 function submitConfirmBooking(){
-	const payment =
-		currentConfirmForm.querySelector('[name="paymentMethod"]');
-
-		const room =
-		currentConfirmForm.querySelector('[name="roomNumber"]');
-
-		if(payment.value === "" || room.value === ""){
-
-		    document.getElementById("confirmMissingError")
-		    .style.display = "block";
-
-		    return;
-		}
     const entered =
     document.getElementById("confirmReference")
     .value.trim();
-
-    if(entered !== currentReference){
-
-        document.getElementById("confirmError")
+    const room =
+    currentConfirmForm.querySelector('[name="roomNumber"]');
+    if(room.value === ""){
+        document.getElementById("confirmMissingError")
         .style.display = "block";
-
         return;
     }
-
+    if(entered !== currentReference){
+        document.getElementById("confirmError")
+        .style.display = "block";
+        return;
+    }
+    document.getElementById("confirmError")
+    .style.display = "none";
     currentConfirmForm
     .querySelector(".confirmedReferenceInput")
     .value = entered;
 
     currentConfirmForm.submit();
 }
-
-document.getElementById("confirm-modal")
-.addEventListener("click", function(e){
-
-    if(e.target === this){
-
-        this.style.display = "none";
-    }
-});
 </script>
 </body>
 </html>
