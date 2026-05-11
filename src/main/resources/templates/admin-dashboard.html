@@ -1025,6 +1025,22 @@ function searchReservations(){
 }
 let currentConfirmForm = null;
 let currentReference = "";
+function openConfirmModal(button){
+
+    currentConfirmForm =
+    button.closest("form");
+
+    currentReference =
+    button.getAttribute("data-ref");
+
+    document.getElementById("confirmReference").value = "";
+
+    document.getElementById("confirmError").style.display = "none";
+
+    document.getElementById("confirmMissingError").style.display = "none";
+
+    document.getElementById("confirm-modal").style.display = "flex";
+}
 function submitConfirmBooking(){
     const entered =
     document.getElementById("confirmReference")
@@ -1032,13 +1048,13 @@ function submitConfirmBooking(){
     const room =
     currentConfirmForm.querySelector('[name="roomNumber"]');
     if(room.value === ""){
-        document.getElementById("confirmMissingError")
-        .style.display = "block";
+        document.getElementById("confirmMissingError").style.display = "block";
+        document.getElementById("confirmError").style.display = "none";
         return;
     }
     if(entered !== currentReference){
-        document.getElementById("confirmError")
-        .style.display = "block";
+        document.getElementById("confirmError").style.display = "block";
+        document.getElementById("confirmMissingError").style.display = "none";
         return;
     }
     document.getElementById("confirmError")
