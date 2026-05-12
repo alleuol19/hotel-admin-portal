@@ -18,9 +18,9 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class AuthController {
-	static String url = "jdbc:mysql://mysql.railway.internal:3306/railway";
+	static String url = "jdbc:mysql://tramway.proxy.rlwy.net:12964/railway";
 	static String dbUser = "root";
-	static String dbPass = "qIOlaWsFbfipeyehbTLbiscGTAvfJyNv";	
+	static String dbPass = "qIOlaWsFbfipeyehbTLbiscGTAvfJyNv";
 	@GetMapping("/")
 	public String home() {
 	    return "redirect:/admin-login";
